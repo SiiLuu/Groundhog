@@ -24,14 +24,42 @@ def temperatureAverage(tab, period):
         valueG /= period
         return valueG
 
-def printResults(tempA):
-    (print("g=%.2f" % tempA) if tempA != None else print("g=nan"))
+def temperatureEvolution(tab, period):
+    if len(tab) <= period:
+        return
+    else:
+        valueG = 0
+        tempA = len(tab) - period
+        while (tempA < len(tab)):
+            d = tab[tempA] - tab[tempA - 1]
+            valueG += (d if d > 0 else 0)
+            tempA += 1
+        valueG /= period
+        return valueG
+
+def standardDeviation(tab, period):
+    if len(tab) <= period:
+        return
+    else:
+        valueG = 0
+        tempA = len(tab) - period
+        while (tempA < len(tab)):
+            d = tab[tempA] - tab[tempA - 1]
+            valueG += (d if d > 0 else 0)
+            tempA += 1
+        valueG /= period
+        return valueG
+
+def printResults(tempA, tempB, tempC):
+    (print("g=%.2f" % tempA, end="    ") if tempA != None else print("g=nan", end="    "))
+    (print("r=%.2f" % tempB, end="    ") if tempA != None else print("r=nan", end="    "))
+    (print("d=%.2f" % tempC) if tempA != None else print("d=nan"))
 
 def relTempEvol(tab, period):
     tempA = temperatureAverage(tab, period)
-    #temperatureEvolution()
-    #standardDeviation()
-    printResults(tempA)
+    tempB = temperatureEvolution(tab, period)
+    tempC = standardDeviation(tab, period)
+    printResults(tempA, tempB, tempC)
 
 def previson(tab, txt, period):
     tab.append(float(txt))
