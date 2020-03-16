@@ -11,15 +11,13 @@ import sys
 import numbers
 from math import *
 
-def previson(txt, period):
-    print("OUI MONSIEUR")
+def relTempEvol(tab, period):
+    print(tab)
 
-def isFloat(value):
-    try:
-        float(value)
-        return True
-    except ValueError:
-        return False
+def previson(txt, period):
+    tab = []
+    tab.append(float(txt))
+    relTempEvol(tab, period)
 
 def loop(period):
     while (1):
@@ -30,6 +28,13 @@ def loop(period):
             previson(txt, period)
         else:
             print("Bad input !!!")
+
+def isFloat(value):
+    try:
+        float(value)
+        return True
+    except ValueError:
+        return False
 
 def checkArgs(a):
     if (not a.isdigit()):
