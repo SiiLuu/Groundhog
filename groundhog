@@ -11,21 +11,40 @@ import sys
 import numbers
 from math import *
 
-def relTempEvol(tab, period):
-    print(tab)
+def temperatureAverage(tab, period):
+    if len(tab) <= period:
+        return
+    else:
+        valueG = 0
+        tempA = len(tab) - period
+        while (tempA < len(tab)):
+            d = tab[tempA] - tab[tempA - 1]
+            valueG += (d if d > 0 else 0)
+            tempA += 1
+        valueG /= period
+        return valueG
 
-def previson(txt, period):
-    tab = []
+def printResults(tempA):
+    (print("g=%.2f" % tempA) if tempA != None else print("g=nan"))
+
+def relTempEvol(tab, period):
+    tempA = temperatureAverage(tab, period)
+    #temperatureEvolution()
+    #standardDeviation()
+    printResults(tempA)
+
+def previson(tab, txt, period):
     tab.append(float(txt))
     relTempEvol(tab, period)
 
 def loop(period):
+    tab = []
     while (1):
         txt = input()
         if (txt == "STOP"):
             break
         elif (isFloat(txt)):
-            previson(txt, period)
+            previson(tab, txt, period)
         else:
             print("Bad input !!!")
 
