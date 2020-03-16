@@ -8,21 +8,49 @@
 ##
 
 import sys
+import numbers
 from math import *
+
+def previson(txt, period):
+    print("OUI MONSIEUR")
+
+def isFloat(value):
+    try:
+        float(value)
+        return True
+    except ValueError:
+        return False
+
+def loop(period):
+    while (1):
+        txt = input()
+        if (txt == "STOP"):
+            break
+        elif (isFloat(txt)):
+            previson(txt, period)
+        else:
+            print("Bad input !!!")
 
 def checkArgs(a):
     if (not a.isdigit()):
         sys.stderr.write("Error: period need to be integers.\n")
         sys.exit(84)
 
-if (len(sys.argv) == 2 and sys.argv[1] == "-h"):
+def help():
     print("SYNOPSIS")
     print("    ./groundhog period")
     print("\nDESCRIPTION")
     print("    period\t   the number of days defining a period")
     sys.exit(0)
 
-if (len(sys.argv) == 2):
-    checkArgs(sys.argv[1])
-    sys.exit(0)
-sys.exit(84)
+def main():
+    if (len(sys.argv) == 2 and sys.argv[1] == "-h"):
+        help()
+    if (len(sys.argv) == 2):
+        checkArgs(sys.argv[1])
+        loop(int(sys.argv[1]))
+        sys.exit(0)
+    sys.exit(84)
+
+if __name__  == "__main__":
+    main()
