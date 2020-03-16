@@ -28,14 +28,12 @@ def temperatureEvolution(tab, period):
     if len(tab) <= period:
         return
     else:
-        valueG = 0
-        tempA = len(tab) - period
-        while (tempA < len(tab)):
-            d = tab[tempA] - tab[tempA - 1]
-            valueG += (d if d > 0 else 0)
-            tempA += 1
-        valueG /= period
-        return valueG
+        minim = tab[len(tab) - 1 - period]
+        maxim = tab[len(tab) - 1]
+        pourc = (maxim - minim) * 100 / minim
+        if (pourc - floor(pourc) >= 0.5):
+            return ceil(pourc)
+        return floor(pourc)
 
 def standardDeviation(tab, period):
     if len(tab) <= period:
@@ -52,8 +50,8 @@ def standardDeviation(tab, period):
 
 def printResults(tempA, tempB, tempC):
     (print("g=%.2f" % tempA, end="    ") if tempA != None else print("g=nan", end="    "))
-    (print("r=%.2f" % tempB, end="    ") if tempA != None else print("r=nan", end="    "))
-    (print("d=%.2f" % tempC) if tempA != None else print("d=nan"))
+    (print("r=%i%%" % tempB, end="    ") if tempB != None else print("r=nan%", end="    "))
+    (print("s=%.2f" % tempC) if tempC != None else print("s=nan"))
 
 def relTempEvol(tab, period):
     tempA = temperatureAverage(tab, period)
