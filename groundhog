@@ -45,17 +45,25 @@ def temperatureEvolution(tab, period):
         return floor(pourc)
 
 def standardDeviation(tab, period):
-    if len(tab) <= period:
+    if len(tab) < period:
         return
     else:
-        valueG = 0
+        standD = []
+        valueD = 0
         tempA = len(tab) - period
         while (tempA < len(tab)):
-            d = tab[tempA] - tab[tempA - 1]
-            valueG += (d if d > 0 else 0)
+            valueD += tab[tempA]
             tempA += 1
-        valueG /= period
-        return valueG
+        valueD /= period
+        tempA = len(tab) - period
+        while (tempA < len(tab)):
+            standD.append((tab[tempA] - valueD) * (tab[tempA] - valueD))
+            tempA += 1
+        standDTotal = 0
+        for i in standD:
+            standDTotal += i
+        standDTotal /= period
+        return sqrt(standDTotal)
 
 def printResults(tempA, tempB, tempC, switch):
     (print("g=%.2f" % tempA, end="    ") if tempA != None else print("g=nan", end="    "))
