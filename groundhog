@@ -11,6 +11,15 @@ import sys
 import numbers
 from math import *
 
+def didSwitchOccured(r, previousr):
+	if (previousr < 0 and r > 0) :
+		switch = True
+	elif (previousr > 0 and r < 0) :
+		switch = True
+	else :
+		switch = False
+	return (switch)
+
 def temperatureAverage(tab, period):
     if len(tab) <= period:
         return
@@ -48,20 +57,41 @@ def standardDeviation(tab, period):
         valueG /= period
         return valueG
 
-def printResults(tempA, tempB, tempC):
+def printResults(tempA, tempB, tempC, switch):
     (print("g=%.2f" % tempA, end="    ") if tempA != None else print("g=nan", end="    "))
     (print("r=%i%%" % tempB, end="    ") if tempB != None else print("r=nan%", end="    "))
-    (print("s=%.2f" % tempC) if tempC != None else print("s=nan"))
+    if (switch == True):
+        (print("s=%.2f" % tempC, end="    ") if tempC != None else print("s=nan", end="    "))
+        print("a switch occurs")
+    else:
+        (print("s=%.2f" % tempC) if tempC != None else print("s=nan"))
 
-def relTempEvol(tab, period):
+def relTempEvol(tab, prev, period):
+    switch = False
     tempA = temperatureAverage(tab, period)
     tempB = temperatureEvolution(tab, period)
+    tempBP = temperatureEvolution(prev, period)
     tempC = standardDeviation(tab, period)
-    printResults(tempA, tempB, tempC)
+    if (tempB != None):
+        if (tempBP == None):
+            previousr = -666
+        else:
+            previousr = int(tempBP)
+        r = int(tempB)
+    else:
+        r = -666
+        previousr = -666
+    if (r != -666 and previousr != -666):
+        switch = didSwitchOccured(r, previousr)
+    else:
+        switch = False
+    printResults(tempA, tempB, tempC, switch)
 
 def previson(tab, txt, period):
     tab.append(float(txt))
-    relTempEvol(tab, period)
+    prev = tab
+    prev = prev[:-1]
+    relTempEvol(tab, prev, period)
 
 def loop(period):
     tab = []
