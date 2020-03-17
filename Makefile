@@ -1,6 +1,6 @@
 ##
-## EPITECH PROJECT, 2019
-## CNA_groundhog_2018
+## EPITECH PROJECT, 2020
+## CNA_groundhog_2019
 ## File description:
 ## Makefile
 ##
