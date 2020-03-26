@@ -106,7 +106,10 @@ def previson(tab, txt, period):
     prev = prev[:-1]
     relTempEvol(tab, prev, period)
 
-def end(tab):
+def end(tab, period):
+    if (len(tab) < period):
+        sys.stderr.write("Not enough values.\n")
+        sys.exit(84)
     tab = [1, 2, 3]
     a = 0
     print("Global tendency switched %i times" % nbSwitches)
@@ -115,9 +118,13 @@ def end(tab):
 def loop(period):
     tab = []
     while (1):
-        txt = input()
+        try:
+            txt = input()
+        except (EOFError, KeyboardInterrupt):
+            sys.stderr.write("No stop.\n")
+            sys.exit(84)
         if (txt == "STOP"):
-            end(tab)
+            end(tab, period)
             break
         elif (isFloat(txt)):
             previson(tab, txt, period)
@@ -129,7 +136,8 @@ def isFloat(value):
         float(value)
         return True
     except ValueError:
-        return False
+        sys.stderr.write("Bad input !!!\n")
+        sys.exit(84)
 
 def checkArgs(a):
     if (not a.isdigit()):
