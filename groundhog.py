@@ -12,6 +12,7 @@ import numbers
 from math import *
 
 nbSwitches = 0
+outlierses = []
 
 def didSwitchOccured(r, previousr):
 	if (previousr < 0 and r > 0) :
@@ -76,6 +77,24 @@ def printResults(tempA, tempB, tempC, switch):
     else:
         (print("s=%.2f" % tempC) if tempC != None else print("s=nan"))
 
+def outliers(tab, period, tempC):
+    global outlierses
+    i = 0
+    averageTemp = 0
+    list = []
+
+    list.append(tab[len(tab) -1])
+    while (i < period):
+        averageTemp += tab[i - period]
+        i += 1
+    high = (averageTemp / period) + 2 * tempC
+    low = (averageTemp / period) - 2 * tempC
+    gap = (tab[len(tab) -1] - low) / (high - low)
+    if (gap > 0.5):
+        gap = 1 - gap
+    list.append(gap)
+    outlierses.append(list)
+
 def relTempEvol(tab, prev, period):
     global nbSwitches
     switch = False
@@ -83,21 +102,14 @@ def relTempEvol(tab, prev, period):
     tempB = temperatureEvolution(tab, period)
     tempBP = temperatureEvolution(prev, period)
     tempC = standardDeviation(tab, period)
-    if (tempB != None):
-        if (tempBP == None):
-            previousr = -666
+    if (len(tab) >= period):
+        outliers(tab, period, tempC)
+    if (tempBP != None):
+        if ((abs(tempB + tempBP)) != (abs(tempB) + abs(tempBP))):
+            nbSwitches += 1;
+            switch = True;
         else:
-            previousr = int(tempBP)
-        r = int(tempB)
-    else:
-        r = -666
-        previousr = -666
-    if (r != -666 and previousr != -666):
-        switch = didSwitchOccured(r, previousr)
-        if (switch == True):
-            nbSwitches += 1
-    else:
-        switch = False
+            switch = False;
     printResults(tempA, tempB, tempC, switch)
 
 def previson(tab, txt, period):
@@ -107,13 +119,20 @@ def previson(tab, txt, period):
     relTempEvol(tab, prev, period)
 
 def end(tab, period):
+    global outlierses
+    fiveOutliers = []
+    i = 0
+
     if (len(tab) < period):
         sys.stderr.write("Not enough values.\n")
         sys.exit(84)
-    tab = [1, 2, 3]
-    a = 0
+    outlierses.sort(key=lambda x: x[1], reverse = False)
+    if (len(outlierses) > 5):
+        while (i < 5):
+            fiveOutliers.append(outlierses[i][0])
+            i += 1
     print("Global tendency switched %i times" % nbSwitches)
-    print("5 weirdest values are " % tab)
+    print("5 weirdest values are ", fiveOutliers)
 
 def loop(period):
     tab = []
