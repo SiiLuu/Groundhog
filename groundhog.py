@@ -94,7 +94,11 @@ def outliers(tab, period, tempC):
         i += 1
     high = (averageTemp / period) + 2 * tempC
     low = (averageTemp / period) - 2 * tempC
-    gap = (tab[len(tab) -1] - low) / (high - low)
+
+    if ((high - low) == 0):
+        gap = (tab[len(tab) -1] - low)
+    else:
+        gap = (tab[len(tab) -1] - low) / (high - low)
     if (gap > 0.5):
         gap = 1 - gap
     list.append(gap)
