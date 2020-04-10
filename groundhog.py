@@ -12,6 +12,8 @@ import numbers
 from math import *
 
 nbSwitches = 0
+switch = False
+swit = False
 outlierses = []
 
 def didSwitchOccured(r, previousr):
@@ -42,7 +44,10 @@ def temperatureEvolution(tab, period):
     else:
         minim = tab[len(tab) - 1 - period]
         maxim = tab[len(tab) - 1]
-        pourc = (maxim - minim) * 100 / minim
+        if (minim == 0):
+            pourc = (maxim - minim) * 100
+        else:
+            pourc = (maxim - minim) * 100 / minim
         if (pourc - floor(pourc) >= 0.5):
             return ceil(pourc)
         return floor(pourc)
@@ -95,21 +100,51 @@ def outliers(tab, period, tempC):
     list.append(gap)
     outlierses.append(list)
 
-def relTempEvol(tab, prev, period):
+def switchesOcc(tab, prev, period):
+    global switch
+    global swit
     global nbSwitches
+    i = 0
+    averageTemp = 0
+    averageTempPrev = 0
+
+    while (i < period):
+        averageTemp += tab[i - period]
+        i += 1
+    i = 0
+    if (len(prev) >= period):
+        while (i < period):
+            averageTempPrev += prev[i - period]
+            i += 1
+    if (((averageTemp / period) < (averageTempPrev / period)) and (swit == False)):
+        nbSwitches += 1;
+        switch = True;
+        swit = True
+    if (((averageTemp / period) > (averageTempPrev / period)) and (swit == True)):
+        nbSwitches += 1;
+        switch = True;
+        swit = False
+
+def relTempEvol(tab, prev, period):
+    global switch
+    global swit
     switch = False
     tempA = temperatureAverage(tab, period)
     tempB = temperatureEvolution(tab, period)
     tempBP = temperatureEvolution(prev, period)
     tempC = standardDeviation(tab, period)
+    if (len(tab) == 2):
+        if (tab[0] > tab[1]):
+            swit = True
     if (len(tab) >= period):
         outliers(tab, period, tempC)
-    if (tempBP != None):
-        if ((abs(tempB + tempBP)) != (abs(tempB) + abs(tempBP))):
-            nbSwitches += 1;
-            switch = True;
-        else:
-            switch = False;
+        switchesOcc(tab, prev, period)
+    ##if (tempBP != None):
+    ##    if ((abs(tempB + tempBP)) != (abs(tempB) + abs(tempBP))):
+    ##        nbSwitches += 1;
+    ##        switch = True;
+    ##    else:
+    ##        switch = False;
     printResults(tempA, tempB, tempC, switch)
 
 def previson(tab, txt, period):
