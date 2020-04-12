@@ -15,6 +15,7 @@ nbSwitches = 0
 switch = False
 swit = False
 outlierses = []
+check = False
 
 def didSwitchOccured(r, previousr):
 	if (previousr < 0 and r > 0) :
@@ -92,8 +93,8 @@ def outliers(tab, period, tempC):
     while (i < period):
         averageTemp += tab[i - period]
         i += 1
-    high = (averageTemp / period) + 2 * tempC
-    low = (averageTemp / period) - 2 * tempC
+    high = (averageTemp / period) + 1.88 * tempC
+    low = (averageTemp / period) - 1.88 * tempC
 
     if ((high - low) == 0):
         gap = (tab[len(tab) -1] - low)
@@ -121,26 +122,41 @@ def switchesOcc(tab, prev, period):
             averageTempPrev += prev[i - period]
             i += 1
     if (((averageTemp / period) < (averageTempPrev / period)) and (swit == False)):
-        nbSwitches += 1;
-        switch = True;
+        nbSwitches += 1
+        switch = True
         swit = True
     if (((averageTemp / period) > (averageTempPrev / period)) and (swit == True)):
-        nbSwitches += 1;
-        switch = True;
+        nbSwitches += 1
+        switch = True
         swit = False
+
+def tempEvolution(tab):
+    checkEvolution = {}
+    temp = []
+    i = 0
+    while ((i + 1) < len(tab)):
+        if (tab[i] < tab[i + 1]):
+            temp.append('Increasing')
+        else:
+            temp.append('Decreasing')
+        i += 1
+    checkEvolution[temp.count('Increasing')] = False
+    checkEvolution[temp.count('Decreasing')] = True
+    return (checkEvolution[max(checkEvolution)])
 
 def relTempEvol(tab, prev, period):
     global switch
     global swit
+    global check
     switch = False
     tempA = temperatureAverage(tab, period)
     tempB = temperatureEvolution(tab, period)
     tempBP = temperatureEvolution(prev, period)
     tempC = standardDeviation(tab, period)
-    if (len(tab) == 2):
-        if (tab[0] > tab[1]):
-            swit = True
-    if (len(tab) >= period):
+    if (len(tab) > period):
+        if (check == False):
+            swit = tempEvolution(tab)
+            check = True
         outliers(tab, period, tempC)
         switchesOcc(tab, prev, period)
     printResults(tempA, tempB, tempC, switch)
